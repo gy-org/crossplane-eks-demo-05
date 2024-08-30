@@ -47,6 +47,7 @@ jobs:
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
           # envsubst < crossplane/cluster.yaml | kubectl apply -f -
           grafanaURL=$(kubectl get eks xplane-$CLUSTER_NAME -o json| jq '.status.eks.grafanaURL')
+          echo "********$grafanaURL"
       - name: Install yq
         run: |
           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -54,7 +55,7 @@ jobs:
     
       - name: Update catalog-info.yaml  
         run: |
-          echo $grafanaURL
+          echo "********$grafanaURL"
           yq -i '.metadata.links = [{"url": $grafanaURL, "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
       
       - name: Commit changes
