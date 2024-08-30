@@ -46,7 +46,7 @@ jobs:
           export AWS_SESSION_TOKEN=$(echo $role | jq -r .Credentials.SessionToken)
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
           # envsubst < crossplane/cluster.yaml | kubectl apply -f -
-          
+          grafanaURL =  kubectl get eks xplane-crossplane-eks-demo-05 -o json| jq '.status.eks.grafanaURL' 
       - name: Install yq
         run: |
           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -55,13 +55,7 @@ jobs:
       - name: Update catalog-info.yaml  
         run: |
           # Check if links field exists
-          if yq '.metadata.links' catalog-info.yaml; then
-            # If links exists, append the new link
-            yq -i '.metadata.links += [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]' catalog-info.yaml
-          else
-            # If links does not exist, create it
-            yq -i '.metadata.links = [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]' catalog-info.yaml
-          fi
+          yq -i '.metadata.links = [{"url": $grafanaURL, "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
       
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
