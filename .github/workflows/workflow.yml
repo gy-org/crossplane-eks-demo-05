@@ -36,6 +36,7 @@ jobs:
 
 
       - name: Create new EKS Cluster using Crossplane
+        id: create-cluster
         run: |
           export CLUSTER_NAME=${{ github.event.inputs.clusterName }}
           export VERSION=${{ github.event.inputs.version }}
@@ -46,8 +47,9 @@ jobs:
           export AWS_SESSION_TOKEN=$(echo $role | jq -r .Credentials.SessionToken)
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
           # envsubst < crossplane/cluster.yaml | kubectl apply -f -
-          export grafanaURL=$(kubectl get eks xplane-$CLUSTER_NAME -o json| jq '.status.eks.grafanaURL')
-          echo "********$grafanaURL"
+          grafanaURL=$(kubectl get eks xplane-$CLUSTER_NAME -o json| jq '.status.eks.grafanaURL')
+          echo "::set-output name=grafanaURL::$grafanaURL"
+          
       - name: Install yq
         run: |
           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -55,9 +57,8 @@ jobs:
     
       - name: Update catalog-info.yaml  
         run: |
-          echo "********$grafanaURL"
-          echo "********$CLUSTER_NAME"
-          yq -i '.metadata.links = [{"url": $grafanaURL, "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
+          echo "********${{ steps.create-cluster.outputs.grafanaURL }}"
+          yq -i '.metadata.links = [{"url": "${{ steps.create-cluster.outputs.grafanaURL }}", "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
       
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
