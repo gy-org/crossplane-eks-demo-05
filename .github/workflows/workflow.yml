@@ -47,6 +47,8 @@ jobs:
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
           # envsubst < crossplane/cluster.yaml | kubectl apply -f -
           grafanaURL =  kubectl get eks xplane-crossplane-eks-demo-05 -o json| jq '.status.eks.grafanaURL' 
+          echo "**********"
+          echo $grafanaURL
       - name: Install yq
         run: |
           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
