@@ -1,4 +1,6 @@
 name: Create Amazon EKS
+permissions:
+  contents: write
 
 on:
   workflow_dispatch:
