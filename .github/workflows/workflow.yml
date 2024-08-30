@@ -54,7 +54,14 @@ jobs:
     
       - name: Update catalog-info.yaml  
         run: |
-          yq -i '.metadata.annotations += {"links": [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]}' catalog-info.yaml
+          # Check if links field exists
+          if yq '.metadata.links' catalog-info.yaml; then
+            # If links exists, append the new link
+            yq -i '.metadata.links += [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]' catalog-info.yaml
+          else
+            # If links does not exist, create it
+            yq -i '.metadata.links = [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]' catalog-info.yaml
+          fi
       
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
