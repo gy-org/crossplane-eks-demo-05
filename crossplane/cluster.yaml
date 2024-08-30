@@ -1,0 +1,16 @@
+---
+apiVersion: cluster.awsblueprints.io/v1alpha1
+kind: eks
+metadata:
+  name: "xplane-${CLUSTER_NAME}"
+  namespace: default
+spec:
+  parameters:
+    clusterName: "${CLUSTER_NAME}"
+    id: "id-${CLUSTER_NAME}"
+    region: "${REGION}"
+    version: "${VERSION}"
+    iam:
+      roleArn: "arn:aws:iam::625011733915:role/idp-demo"
+  managedNodeGroups:
+    desiredSize: 3

@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: crossplane-eks-demo-05
+  annotations:
+    github.com/project-slug: gy-org/crossplane-eks-demo-05
+  description: crossplane-eks-demo-05 created by Crossplane
+spec:
+  type: cluster
+  owner: user:guest
+  lifecycle: experimental
