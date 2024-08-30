@@ -46,7 +46,7 @@ jobs:
           export AWS_SESSION_TOKEN=$(echo $role | jq -r .Credentials.SessionToken)
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
           # envsubst < crossplane/cluster.yaml | kubectl apply -f -
-          grafanaURL =  kubectl get eks xplane-crossplane-eks-demo-05 -o json| jq '.status.eks.grafanaURL' 
+          grafanaURL=kubectl get eks xplane-crossplane-eks-demo-05 -o json| jq '.status.eks.grafanaURL' 
           echo "**********"
           echo $grafanaURL
       - name: Install yq
