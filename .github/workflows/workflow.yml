@@ -54,7 +54,7 @@ jobs:
     
       - name: Update catalog-info.yaml  
         run: |
-          # Check if links field exists
+          echo $grafanaURL
           yq -i '.metadata.links = [{"url": $grafanaURL, "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
       
       - name: Commit changes
