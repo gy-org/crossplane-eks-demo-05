@@ -57,8 +57,7 @@ jobs:
     
       - name: Update catalog-info.yaml  
         run: |
-          echo "********${{ steps.create-cluster.outputs.grafanaURL }}"
-          yq -i '.metadata.links = [{"url": "${{ steps.create-cluster.outputs.grafanaURL }}", "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
+          yq -i '.metadata.links = [{"url": ${{ steps.create-cluster.outputs.grafanaURL }}, "title": "Amazon Managed Grafana Dashboard URL", "icon": "grafana"}]' catalog-info.yaml
       
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
