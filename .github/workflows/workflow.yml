@@ -46,7 +46,30 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=$(echo $role | jq -r .Credentials.SecretAccessKey)
           export AWS_SESSION_TOKEN=$(echo $role | jq -r .Credentials.SessionToken)
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
-          # envsubst < crossplane/cluster.yaml | kubectl apply -f -
+
+          if kubectl get eks | grep -q xplane-$CLUSTER_NAME; then
+            echo "Cluster exists."
+          else
+            echo "Cluster does not exist. Now creating..."
+            envsubst < crossplane/cluster.yaml | kubectl apply -f -
+            echo "Waiting for EKS cluster status to be Ready..."
+            sleep 10
+            while true; do
+               # Get the status of the EKS cluster
+               STATUS_JSON=$(kubectl get eks xplane-$CLUSTER_NAME -o json)
+               READY_STATUS=$(echo "$STATUS_JSON" | jq -r '.status.conditions[] | select(.type == "Ready") | .status')
+               READY_TYPE=$(echo "$STATUS_JSON" | jq -r '.status.conditions[] | select(.type == "Ready") | .type')
+
+               if [[ "$READY_TYPE" == "Ready" && "$READY_STATUS" == "True" ]]; then
+                 echo "Success: EKS cluster is Ready."
+                 break
+               else
+                 echo "EKS cluster is not ready yet. Current status: $READY_STATUS"
+                 sleep 10  # Wait for 10 seconds before checking again
+               fi
+             done
+          fi
+          
           grafanaURL=$(kubectl get eks xplane-$CLUSTER_NAME -o json| jq '.status.eks.grafanaURL')
           echo "::set-output name=grafanaURL::$grafanaURL"
           
