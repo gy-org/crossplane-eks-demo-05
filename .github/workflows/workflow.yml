@@ -43,4 +43,18 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=$(echo $role | jq -r .Credentials.SecretAccessKey)
           export AWS_SESSION_TOKEN=$(echo $role | jq -r .Credentials.SessionToken)
           aws eks update-kubeconfig --name amp-test --region ap-northeast-1
-          envsubst < crossplane/cluster.yaml | kubectl apply -f - 
+          # envsubst < crossplane/cluster.yaml | kubectl apply -f -
+          
+      - name: Install yq
+        run: |
+          sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+    
+      - name: Update catalog-info.yaml  
+        run: |
+          yq -i '.metadata.annotations += {"links": [{"url": "https://dashboard.example.com", "title": "My Dashboard", "icon": "dashboard"}]}' catalog-info.yaml
+      
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update catalog-info.yaml
