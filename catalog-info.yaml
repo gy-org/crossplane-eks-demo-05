@@ -5,6 +5,10 @@ metadata:
   annotations:
     github.com/project-slug: gy-org/crossplane-eks-demo-05
   description: crossplane-eks-demo-05 created by Crossplane
+  links:
+    - url: https://dashboard.example.com
+      title: My Dashboard
+      icon: dashboard
 spec:
   type: cluster
   owner: user:guest
