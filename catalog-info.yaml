@@ -6,9 +6,8 @@ metadata:
     github.com/project-slug: gy-org/crossplane-eks-demo-05
   description: crossplane-eks-demo-05 created by Crossplane
   links:
-    - url: https://dashboard.example.com
-      title: My Dashboard
-      icon: dashboard
+    - title: Amazon Managed Grafana Dashboard URL
+      icon: grafana
 spec:
   type: cluster
   owner: user:guest
