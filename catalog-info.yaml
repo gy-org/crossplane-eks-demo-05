@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
   name: crossplane-eks-demo-05
+  environmentType: eks
   annotations:
     github.com/project-slug: gy-org/crossplane-eks-demo-05
   description: crossplane-eks-demo-05 created by Crossplane
